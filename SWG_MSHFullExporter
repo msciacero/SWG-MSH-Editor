@@ -1,0 +1,1826 @@
+--global variables 
+global swg_fvfArray
+global swg_shaderArray
+global swg_objArray
+
+floater = newRolloutFloater "Star Wars Galaxies" 400 600 10 70
+
+--shader gui
+rollout SWG_shader "SHT File Creator"(
+	label lbls0 ""
+	button expSHT "Create  SHT" width:200 Height:25 align:#center
+	group "Materials" (
+		spinner option1 "Option 1  " range:[0,1,1] scale:0.01 align:#left across:3
+		spinner option2 "Option 2  " range:[0,1,1] scale:0.01 align:#left
+		spinner option3 "Option 3  " range:[0,1,1] scale:0.01 align:#left
+		spinner option4 "Option 4  " range:[0,1,1] scale:0.01 align:#left across:3
+		spinner option5 "Option 5  " range:[0,1,1] scale:0.01 align:#left
+		spinner option6 "Option 6  " range:[0,1,1] scale:0.01 align:#left
+		spinner option7 "Option 7  " range:[0,1,1] scale:0.01 align:#left across:3
+		spinner option8 "Option 8  " range:[0,1,1] scale:0.01 align:#left
+		spinner option9 "Option 9  " range:[0,1,0] scale:0.01 align:#left
+		spinner option10 "Option 10" range:[0,1,0] scale:0.01 align:#left across:3
+		spinner option11 "Option 11" range:[0,1,0] scale:0.01 align:#left
+		spinner option12 "Option 12" range:[0,1,0] scale:0.01 align:#left
+		spinner option13 "Option 13" range:[0,1,1] scale:0.01 align:#left across:3
+		spinner option14 "Option 14" range:[0,1,0] scale:0.01 align:#left
+		spinner option15 "Option 15" range:[0,1,0] scale:0.01 align:#left
+		spinner option16 "Option 16" range:[0,1,0] scale:0.01 align:#left across:2 width:109
+		spinner option17 "Option 17" range:[0,100,20] scale:0.1 align:#left width:109 offset:[-77,0]
+	)
+	group "Textures" (
+		label lblt1 "Type" across:4 offset:[-7,0]
+		label lblt2 "TCSS" offset:[-54,0]
+		label lblt3 "AVRS" offset:[-120,0]
+		label lblt4 "Name of texture" offset:[-80,0]
+		dropdownlist ddlt1 "" items:#("") width:100 across:4 enabled: false
+		dropdownlist ddlTCSS1 "" items:#("")  width: 30 offset:[-10,0] enabled: false
+		dropdownlist ddlAVRS1 "" items:#("","-128","0","1","2","3","4") width: 50 offset:[-80,0] enabled: false
+		edittext editText1 "" text:"" offset:[-135,0] width:250 enabled: false
+		dropdownlist ddlt2 "" items:#("") width:100 across:4 enabled: false
+		dropdownlist ddlTCSS2 "" items:#("")  width: 30 offset:[-10,0] enabled: false
+		dropdownlist ddlAVRS2 "" items:#("","-128","0","1","2","3","4") width: 50 offset:[-80,0] enabled: false
+		edittext editText2 "" text:"" offset:[-135,0] width:250 enabled: false
+		dropdownlist ddlt3 "" items:#("") width:100 across:4 enabled: false
+		dropdownlist ddlTCSS3 "" items:#("")  width: 30 offset:[-10,0] enabled: false
+		dropdownlist ddlAVRS3 "" items:#("","-128","0","1","2","3","4") width: 50 offset:[-80,0] enabled: false
+		edittext editText3 "" text:"" offset:[-135,0] width:250 enabled: false
+		dropdownlist ddlt4 "" items:#("") width:100 across:4 enabled: false
+		dropdownlist ddlTCSS4 "" items:#("")  width: 30 offset:[-10,0] enabled: false
+		dropdownlist ddlAVRS4 "" items:#("","-128","0","1","2","3","4") width: 50 offset:[-80,0] enabled: false
+		edittext editText4 "" text:"" offset:[-135,0] width:250 enabled: false
+		dropdownlist ddlt5 "" items:#("") width:100 across:4 enabled: false
+		dropdownlist ddlTCSS5 "" items:#("")  width: 30 offset:[-10,0] enabled: false
+		dropdownlist ddlAVRS5 "" items:#("","-128","0","1","2","3","4") width: 50 offset:[-80,0] enabled: false
+		edittext editText5 "" text:"" offset:[-135,0] width:250 enabled: false
+		dropdownlist ddlt6 "" items:#("") width:100 across:4 enabled: false
+		dropdownlist ddlTCSS6 "" items:#("")  width: 30 offset:[-10,0] enabled: false
+		dropdownlist ddlAVRS6 "" items:#("","-128","0","1","2","3","4") width: 50 offset:[-80,0] enabled: false
+		edittext editText6 "" text:"" offset:[-135,0] width:250 enabled: false
+	)
+	group  "" (
+		checkbox ckTex1 "DOT3" checked:false enabled:false across:6
+		dropdownlist ckDDL1 "" items: #() enabled:false offset:[-20,0] width:30
+		checkbox ckTex2 "SPEC" checked:false
+		dropdownlist ckDDL2 "" items: #() offset:[-20,0] width:30 enabled:false
+		checkbox ckTex3 "OPEN" checked:false 
+		dropdownlist ckDDL3 "" items: #() offset:[-20,0] width:30 enabled:false
+	)
+	group ""(
+		checkbox ckEffect "" checked:false across:2 offset:[35,0]
+		editText editEffect "Effect: " text:"" width:300 offset:[-170,0] enabled:false
+		dropdownlist ddlEffect "" items:#("Incomplete selection") align:#center width:200
+	)
+	local shadeOptionArray = #(option1, option2, option3, option4, option5, option6, option7, option8, option9, option10, option11, option12, option13, option14, option15, option16, option17)
+	local shadeTextArray = #(editText1, editText2, editText3, editText4, editText5, editText6)
+	local shadeDDLTypeArray  = #(ddlt1, ddlt2, ddlt3, ddlt4, ddlt5, ddlt6)
+	local shadeDDLTCSSArray  = #(ddlTCSS1, ddlTCSS2, ddlTCSS3, ddlTCSS4, ddlTCSS5, ddlTCSS6)
+	local shadeDDLAVRSArray  = #(ddlAVRS1, ddlAVRS2, ddlAVRS3, ddlAVRS4, ddlAVRS5, ddlAVRS6)
+	local secondaryCKArray = #(ckTex1, ckTex2, ckTex3)
+	local secondaryDDLArray = #(ckDDL1, ckDDL2, ckDDL3)
+	local typeShortArray = #("Diffuse")
+	local typeMediumArray = #("","Decal", "Detail", "Diffuse", "Dirt", "Emissive", "Environment", "Hue", "Irid", "Look Up", "Mask", "Normal", "Resource Icon", "Specular")
+	local typeLongArray = #("","Decal", "Detail", "Detail A", "Detail B", "Diffuse", "Dirt", "Emissive", "Environment", "Hue", "Irid", "Look Up", "Mask", "Normal", "Resource Icon", "Screen", "Specular")
+	local typeTCSS = #("Decal", "Detail", "Detail A", "Detail B", "Diffuse", "Dirt", "Mask", "Normal", "Resource Icon", "Screen", "Specular")
+	local typeAVRS = #("Decal", "Diffuse", "Hue", "Mask", "Specular")
+	local ckDDLArray = #(ckDDL1, ckDDL2, ckDDL3)
+	
+	fn updateEffect y  = ( --Tries to grab which effects the user can use to limit crashes/invisible objects
+		if ddlEffect.enabled == true then (
+			dataArray = #()
+			tcssArray = #()
+			avrsArray = #()
+			strData = ""
+			strTCSS = ""
+			strAVRS = ""
+			sel = ddlEffect.selected
+			ddlEffect.items = #()
+			incomplete = false
+			num = ((swg_fvfArray[1][1])/8-3) as integer
+			for f=1 to num do (
+				if shadeDDLTypeArray[f].selected != "" then append dataArray shadeDDLTypeArray[f].selected else incomplete = true
+				if (shadeDDLTCSSArray[f].enabled and shadeDDLTCSSArray[f].selected != "" ) then append tcssArray shadeDDLTypeArray[f].selected
+				if (shadeDDLAVRSArray[f].enabled and shadeDDLAVRSArray[f].selected != "") then append avrsArray shadeDDLTypeArray[f].selected
+			)
+			if incomplete then (
+				ddlEffect.items = #("Incomplete selection")
+			) else (
+				if (ckTex1.checked and ckDDL1.selection != 1) then append tcssArray "Dot3"
+				if (ckDDL2.selection != 1 and ckTex2.checked and findItem avrsArray "Specular" == 0) then append avrsArray "Specular"
+				if (ckTex3.checked and ckDDL3.selection != 1) then append tcssArray "OPEN"
+				--Need to organize data so it can be quickly checked
+				dataArray = sort dataArray
+				tcssArray = sort tcssArray
+				avrsArray = sort avrsArray
+				for f=1 to dataArray.count do (	strData += dataArray[f])
+				for f=1 to tcssArray.count do (strTCSS += tcssArray[f])
+				for f=1 to avrsArray.count do (strAVRS += avrsArray[f])
+				--43 known configurations to choose from
+				--believe A_ is no color verts, C_ color verts, and H_ is unknown. Hard to test.
+				case strData of (
+					"DecalDetail ADetail BDiffuseMask": if (strTCSS == "DecalDetail ADetail BDiffuseMask" and strAVRS == "DecalMask") then (ddlEffect.items = #("c_2blend_decal.eft"))
+					"DecalDiffuseMask": if (strTCSS == "DecalDiffuseMask" and strAVRS == "Mask") then (ddlEffect.items = #("a_3UV_blend.eft", "c_3uv_blend.eft"))
+					"DecalDiffuseNormal": if (strTCSS == "DecalDiffuseDot3Normal" and strAVRS == "") then (ddlEffect.items = #("a_simple_bump_decal.eft"))
+					"DecalDetail ADetail BDiffuseDirt": if (strTCSS == "DecalDetail ADetail BDiffuseDirt" and strAVRS == "") then (ddlEffect.items = #("c_2blend_decal_dirt.eft"))
+					"Detail ADetail BDiffuseMask": if (strTCSS == "Detail ADetail BDiffuseMask" and strAVRS == "Mask") then (ddlEffect.items = #("a_2blend.eft", "c_2blend.eft"))
+					"DetailDiffuse": (
+						if (strTCSS == "DetailDiffuse" and strAVRS == "Diffuse") then (ddlEffect.items = #("c_punchout_detail.eft"))
+						if (strTCSS == "DetailDiffuse" and strAVRS == "") then (ddlEffect.items = #("a_detail.eft", "c_detail.eft"))	
+					)
+					"DetailDiffuseNormal": if (strTCSS == "DetailDiffuseDot3Normal" and strAVRS == "") then (ddlEffect.items = #("a_detail_bump.eft"))
+					"DetailDiffuseSpecular": (
+						case strTCSS of (
+							"DetailDiffuse": if strAVRS == "DiffuseSpecular" then (ddlEffect.items = #("h_color2_detail_specmap.eft"))
+							"DetailDiffuseSpecular": if strAVRS == "Specular" then (ddlEffect.items = #("a_detail_specmap.eft", "c_detail_specmap.eft", "h_detail_specmap.eft"))
+							"Diffuse": if strAVRS == "Diffuse" then (ddlEffect.items = #("a_alpha.eft"))
+						)
+					)
+					"DetailDiffuseDirt": if (strTCSS == "DetailDiffuseDirt" and strAVRS == "") then (ddlEffect.items = #("c_detail_dirt.eft"))
+					"Diffuse": (
+						case strTCSS of (
+							"Diffuse": (
+								case strAVRS of (
+									"Diffuse": ddlEffect.items = #("a_alpha.eft", "a_alpha_collide.eft", "a_alpha_emis_full.eft", "a_punchout.eft", "a_punchout_collide.eft", "c_alpha.eft", "c_alpha_emis_full.eft", "c_punchout.eft", "h_alpha.eft", "h_color2.eft")
+									"Specular": ddlEffect.items = #("a_specmap.eft")
+									"": ddlEffect.items = #("a_alpha.eft", "a_emis_full.eft", "a_emisadd.eft", "a_emismap.eft", "a_simple.eft", "a_spec.eft", "c_emis_full.eft", "c_emisadd.eft", "c_emismap.eft", "c_simple.eft", "c_spec.eft", "h_simple.eft")
+								)
+							)
+							"DiffuseOPEN": if strAVRS == "" then (ddlEffect.items = #("a_simple_openUV.eft", "c_simple_openUV.eft"))
+						)
+					)
+					"DiffuseMBRN": if (strTCSS == "Diffuse" and strAVRS == "") then (ddlEffect.items = #("ui_membrane.eft"))
+					"DiffuseNormal": (
+						case strTCSS of (
+							"DiffuseNormal": (
+								case strAVRS of (
+									"Diffuse" : ddlEffect.items = #("a_alpha_bump.eft")
+									"": ddlEffect.items = #("a_simple_bump.eft")
+								)
+							)
+							"DiffuseDot3Normal": (
+								case strAVRS of (
+									"Diffuse" : ddlEffect.items = #("a_alpha_bump.eft", "a_punchout_bump.eft")
+									"": ddlEffect.items = #("a_emismap_bump.eft", "a_simple_bump.eft")
+								)
+							)
+						)
+					)
+					"DiffuseResource Icon": if (strTCSS == "DiffuseResource Icon" and strAVRS == "Specular") then (ddlEffect.items = #("a_replace0_specmap_decal.eft"))
+					"DiffuseSpecular": (
+						if (strTCSS == "Diffuse") then (
+							case strAVRS of (
+								"Diffuse": ddlEffect.items = #("a_alpha_specmap.eft")
+								"DiffuseSpecular": ddlEffect.items = #("a_punchout_specmap.eft", "a_punchout_specmap_collide.eft", "h_color2_specmap.eft")
+								"Specular": ddlEffect.items = #("a_specmap.eft", "c_specmap.eft")
+							)
+						)
+					)
+					"Detail ADetail BDiffuseDirtMask": if (strTCSS == "Detail ADetail BDiffuseDirtMask" and strAVRS == "Mask") then (ddlEffect.items = #("a_2blend_dirt.eft", "a_2blend_dirtofdge.eft", "c_2blend_dirt.eft", "c_2blend_dirtofdge.eft"))
+					"Detail ADetail BDiffuseDirtMaskNormal": if (strTCSS == "Detail ADetail BDiffuseDirtDot3MaskNormal" and strAVRS == "Mask") then (ddlEffect.items = #("a_2blend_dirt_bump.eft"))
+					"Detail ADetail BDiffuseDirtMaskSpecular": if (strTCSS == "Detail ADetail BDiffuseDirtMaskSpecular" and strAVRS == "MaskSpecular") then (ddlEffect.items = #("a_2blend_specmap_dirt.eft"))
+					"Detail ADetail BDiffuseDirtLook Up": if (strTCSS == "Detail ADetail BDiffuseDirt" and strAVRS == "Specular") then (ddlEffect.items = #("a_2blend_specmap_dirt_aniso.eft"))
+					"DiffuseEmissive": if (strTCSS == "Diffuse" and strAVRS == "Diffuse") then (ddlEffect.items = #("a_punchout_emismap.eft"))
+					"DiffuseEnvironment": if (strTCSS == "Diffuse" and strAVRS == "") then (ddlEffect.items = #("a_envmask.eft", "a_envmask_spec.eft", "c_envmask.eft", "c_envmask_spec.eft"))
+					"DiffuseEnvironmentMask": if (strTCSS == "Diffuse" and strAVRS == "Diffuse") then (ddlEffect.items = #("a_alpha_envmask.eft", "a_alpha_envmask_spec.eft", "a_alpha_envmask_spec_collide.eft", "c_alpha_envmask_spec.eft", "h_color2_envmask_specmap.eft"))
+					"DiffuseEnvironmentMaskSpecular": if (strTCSS == "Diffuse" and strAVRS == "Diffuse") then (ddlEffect.items = #("a_alpha_envmask_specmap.eft", "a_alpha_envmask_specmap_collide.eft", "c_alpha_envmask_specmap.eft"))
+					"DiffuseEnvironmentScreenSpecular": if (strTCSS == "DiffuseScreenSpecular" and strAVRS == "Specular") then (ddlEffect.items = #("a_screen_envmask_specmap.eft"))
+					"DiffuseEnvironmentSpecular": if (strTCSS == "Diffuse" and strAVRS == "Specular") then (ddlEffect.items = #("a_envmask_specmap.eft", "c_envmask_specmap.eft", "h_envmask_specmap.eft"))
+					"DiffuseEnvironmentHueSpecular": if (strTCSS == "Diffuse" and strAVRS == "Diffuse") then (ddlEffect.items = #("h_alpha_color2_envmask_specmap.eft"))
+					"DiffuseEnvironmentLook UpMask": if (strTCSS == "Diffuse" and strAVRS == "Diffuse") then (ddlEffect.items = #("h_color2_envmask_specmap_aniso.eft"))
+					"DiffuseEnvironmentLook UpSpecular": if (strTCSS == "Diffuse" and strAVRS == "Specular") then (ddlEffect.items = #("h_envmask_specmap_aniso.eft"))
+					"DiffuseHue": if (strTCSS == "Diffuse" and strAVRS == "DiffuseHue") then (ddlEffect.items = #("h_alpha_color2.eft"))
+					"DiffuseIridSpecular": if (strTCSS == "Diffuse" and strAVRS == "Specular") then (ddlEffect.items = #("a_irid.eft"))
+					"DiffuseLook UpNormal": if (strTCSS == "DiffuseDot3Normal" and strAVRS == "Specular") then (ddlEffect.items = #("a_specmap_bump.eft", "a_specmap_bump_emismap.eft", "h_color2_specmap_bump.eft"))
+					"DiffuseLook UpSpecular": (
+						if strTCSS == "Diffuse" then (
+							case strAVRS of (
+								"Diffuse": ddlEffect.items = #("a_alpha_specmap_aniso.eft")
+								"Specular": ddlEffect.items = #("a_specmap_aniso.eft", "a_specmap_aniso_emismap.eft")
+							)
+						)
+					)
+				)
+				if ddlEffect.items.count == 0 then (ddlEffect.items = #("No known effect with that combination"))
+				if ((findItem ddlEffect.items sel) != 0 and (sel != "" or sel!= "No known effect with that combination")) then ( --reset the ddl back to the last selected effect
+					ddlEffect.selection = (findItem ddlEffect.items sel)
+				) else (
+					ddlEffect.selection = 1
+				)
+			)
+		)
+	)
+	
+	fn secondary f = ( -- updates the secondary list
+		if secondaryCKArray[f].checked then (
+			secondaryDDLArray[f].enabled = true
+			secondaryDDLArray[f].selection = 2
+		) else (
+			secondaryDDLArray[f].enabled = false
+			secondaryDDLArray[f].selection = 1
+		)
+		updateEffect 1
+	)
+
+	fn ddltSelected f = ( --Updates drop down boxes
+		num = ((swg_fvfArray[1][1])/8-3) as integer
+		itemArray = #()
+		goodToGo = true
+		
+		shadeDDLTCSSArray[f].selection = 1
+		shadeDDLAVRSArray[f].selection = 1
+		i=1
+		do ( --check for duplicates
+			goodToGo = appendIfunique itemArray shadeDDLTypeArray[i].selected
+			if shadeDDLTypeArray[i].selected == "" then (goodToGo = true)
+			i += 1
+		) while (goodToGo and i <= num)
+		if (findItem itemArray "Normal") > 0 then (
+			ckTex1.enabled = true
+		) else (
+			if ckTex1.enabled then ckTex1.enabled = false
+			if ckTex1.checked then ( 
+				ckTex1.checked = false
+				secondary 1
+			)
+		)
+		if goodToGo == false then (
+			shadeDDLTypeArray[f].selection = 1
+			messageBox "You can only choose one of each type"
+			if shadeDDLTCSSArray[f].enabled then shadeDDLTCSSArray[f].enabled = false
+			if shadeDDLAVRSArray[f].enabled then shadeDDLAVRSArray[f].enabled = false
+		) else if shadeDDLTypeArray[f].selected == "" then ( --nothing was chosen
+				if shadeDDLTCSSArray[f].enabled  then shadeDDLTCSSArray[f].enabled = false
+				if shadeDDLAVRSArray[f].enabled then shadeDDLAVRSArray[f].enabled = false
+				
+		) else ( -- find what was chosen
+			if (findItem typeTCSS shadeDDLTypeArray[f].selected) > 0 then (
+				if shadeDDLTCSSArray[f].enabled == false then shadeDDLTCSSArray[f].enabled = true
+			) else (
+				if shadeDDLTCSSArray[f].enabled then shadeDDLTCSSArray[f].enabled = false
+			)
+			if (findItem typeAVRS shadeDDLTypeArray[f].selected) > 0 then (
+				if shadeDDLAVRSArray[f].enabled == false then shadeDDLAVRSArray[f].enabled = true
+			) else (
+				if shadeDDLAVRSArray[f].enabled then shadeDDLAVRSArray[f].enabled = false
+			)
+		)
+		updateEffect 1
+	)
+	
+	on SWG_shader open do (
+		num = ((swg_fvfArray[1][1])/8-3) as integer
+		shadeName = swg_shaderArray[1]
+		endStr = shadeName.count
+		lbls0.text =  (substring shadeName 8 endStr)
+		avrsList = #("")
+		i = 1
+		for f=0 to num do (append avrsList ((f as integer) as string))
+		tcssList = copy avrsList #noMap
+		deleteItem tcssList tcssList.count
+		for f=1 to num do (
+			if num == 1 then (
+				shadeDDLTypeArray[f].items = typeShortArray
+				ddlTCSS1.enabled = true
+				ddlAVRS1.enabled = true
+			) else if num == 2 then (
+				shadeDDLTypeArray[f].items = typeMediumArray
+			) else (
+				shadeDDLTypeArray[f].items = typeLongArray
+			)
+			shadeDDLTypeArray[f].enabled = true
+			shadeDDLTCSSArray[f].items = tcssList
+			shadeDDLAVRSArray[f].items = avrsList
+			shadeTextArray[f].enabled = true
+			obj = geometry[swg_objArray[1][1]]
+			found = false
+			while i <= obj.modifiers.count and found == false do (
+				varMod = obj.modifiers[i]
+				if (varMod.enabled and (classOf varMod) == Unwrap_UVW) then (
+					for k=1 to varMod.texMapList.count do (
+						if (classOf varMod.texMapList[k] == Bitmaptexture) then (
+							print "2"
+							strText = varMod.texMapList[k].fileName
+							fname = getFileNamePath strText
+							shadeTextArray[f].text = (substituteString strText fname "")
+							found = true
+						)
+					)
+				)
+				i += 1
+			)
+		)
+		ckDDL1.items = tcssList
+		ckDDL2.items = avrsList
+		ckDDL3.items = tcssList
+		
+	)
+	on ddlt1 selected iNumber do ddltSelected 1
+	on ddlt2 selected iNumber do ddltSelected 2
+	on ddlt3 selected iNumber do ddltSelected 3
+	on ddlt4 selected iNumber do ddltSelected 4
+	on ddlt5 selected iNumber do ddltSelected 5
+	on ddlt6 selected iNumber do ddltSelected 6
+	on ckTex1 changed test do secondary 1
+	on ckTex2 changed test do secondary 2
+	on ckTex3 changed test do secondary 3
+	on ckDDL1 selected test do updateEffect 1
+	on ckDDL2 selected test do updateEffect 2
+	on ckDDL3 selected test do updateEffect 3
+	on ddlTCSS1 selected iNumber do updateEffect 1
+	on ddlTCSS2 selected iNumber do updateEffect 1
+	on ddlTCSS3 selected iNumber do updateEffect 1
+	on ddlTCSS4 selected iNumber do updateEffect 1
+	on ddlTCSS5 selected iNumber do updateEffect 1
+	on ddlTCSS6 selected iNumber do updateEffect 1
+	on ddlAVRS1 selected iNumber do updateEffect 1
+	on ddlAVRS2 selected iNumber do updateEffect 1
+	on ddlAVRS3 selected iNumber do updateEffect 1
+	on ddlAVRS4 selected iNumber do updateEffect 1
+	on ddlAVRS5 selected iNumber do updateEffect 1
+	on ddlAVRS6 selected iNumber do updateEffect 1
+	on ckEffect changed test do (
+		if test then (
+			editEffect.enabled = true
+			ddlEffect.enabled = false
+		) else (
+			editEffect.enabled = false
+			ddlEffect.enabled = true
+			updateEffect 1
+		)
+	)
+	
+	fn dataLength stream dataSize = (
+		t1 = floor (dataSize / 16777216)
+		dataSize = dataSize - t1 * 16777216
+		t2 = floor (dataSize / 65536)
+		dataSize = dataSize - t2 * 65536
+		t3 = floor (dataSize / 256)
+		dataSize = dataSize - t3 * 256
+		t4 = dataSize
+		writeByte stream t1 #unsigned
+		writeByte stream t2 #unsigned
+		writeByte stream t3 #unsigned
+		writeByte stream t4 #unsigned
+	)
+	
+	fn dataConverter stream dataString = (
+		case dataString of (  --try this without sorting and see if it works
+			"Decal": (writeLong stream 0x4443414c)
+			"Detail": (writeLong stream 0x44455441)
+			"Dirt": (writeLong stream 0x44495254)
+			"Detail A": (writeLong stream 0x44544c41)
+			"Detail B": (writeLong stream 0x44544c42)
+			"Emissive": (writeLong stream 0x454d4953)
+			"Environment": (writeLong stream 0x454e564d)
+			"Hue": (writeLong stream 0x48554542)
+			"Irid": (writeLong stream 0x49524944)
+			"Look Up": (writeLong stream 0x4c4b5550)
+			"Diffuse": (writeLong stream 0x4d41494e)
+			"Mask": (writeLong stream 0x4d41534b)
+			"Normal": (writeLong stream 0x4e524d4c)
+			"Resource Icon": (writeLong stream 0x52455030)
+			"Screen": (writeLong stream 0x5343524e)
+			"Specular": (writeLong stream 0x53504543)
+			"DOT3":( writeLong stream 0x444f5433)
+			"OPEN":( writeLong stream 0x4F50454E)
+		)
+	)
+			
+
+--Start sht file output
+	on expSHT pressed do (
+		--variables
+		dataArray = #()
+		tcssArray = #()
+		avrsArray = #()
+		textureArray = #()
+		goodToGo = true
+		--gather the data
+		num = ((swg_fvfArray[1][1])/8-3) as integer
+		for f=1 to num do (
+			texLink = "texture/" + shadeTextArray[f].text
+			index = findString texLink "."
+			if (index == undefined) then (
+				texLink += ".dds"
+			) else ( 
+				if (substring texLink index texLink.count != ".dds") then (
+					strError = texLink + " contains incorrect file extension (*.dds)"
+					messageBox strError
+					goodToGo = false
+				)
+			)
+			append dataArray shadeDDLTypeArray[f].selected
+			append textureArray texLink
+			if (shadeDDLTCSSArray[f].enabled and shadeDDLTCSSArray[f].selected != "" ) then (
+				append tcssArray shadeDDLTypeArray[f].selected --cannot do 2d string arrays :-/
+				append tcssArray shadeDDLTCSSArray[f].selected
+			)
+			if (shadeDDLAVRSArray[f].enabled and shadeDDLAVRSArray[f].selected != "") then (
+				append avrsArray shadeDDLTypeArray[f].selected
+				append avrsArray shadeDDLAVRSArray[f].selected
+			)
+		)
+		if (ckTex1.checked) then (
+			append tcssArray "DOT3"
+			append tcssArray ckDDL1.selected
+		)
+		if (ckTex2.checked) then (
+			print "check"
+			if (findItem avrsArray "Specular") == 0 then (
+				append avrsArray "Specular"
+				append avrsArray ckDDL2.selected
+			)
+		)
+		if (ckTex3.checked) then (
+			append tcssArray "OPEN"
+			append tcssArray ckDDL3.selected
+		)
+		--check if all requirements are met
+		--Need diffuse with TCSS, all available types are used, name for each texture
+		index = findItem dataArray "Diffuse"
+		if index == 0 then (
+			goodToGo = false
+			messageBox "A diffuse type must be included"
+		) else (
+			index = findItem tcssArray "Diffuse"
+			if ((index == 0) or (tcssArray[index + 1] == ""))  then (
+				goodToGo = false
+				messageBox "Diffuse type requires a TCSS number"
+			)
+		)
+		index = findItem dataArray ""
+		if index != 0 then (
+			goodToGo = false
+			messageBox "You have not identified a type for each UV map"
+		)
+		index = findItem textureArray "texture/.dds"
+		if index != 0 then (
+			goodToGo = false
+			messageBox "You forgot to put in the name of a texture"
+		)
+		if goodToGo then (
+			if ckEffect.checked then (
+				effectLink = "effect\\" + editEffect.text
+				index = findString effectLink "."
+				if (index == undefined) then (
+					effectLink += ".eft"
+				) else ( 
+					if (substring effectLink index effectLink.count != ".eft") then (
+						strError = effectLink + " contains incorrect file extension (*.eft)"
+						messageBox strError
+						goodToGo = false
+					)
+				)
+			) else (
+				if ddlEffect.selected == "No known effect with that combination" or ddlEffect.selected == "Incomplete selection" then (
+					messageBox "Invalid effect selected: Update selection or change to user input"
+					goodToGo = false
+				) else (
+					effectLink = "effect\\" + ddlEffect.selected
+				)
+			)
+		)
+		if goodToGo then (
+			fname = swg_shaderArray[swg_shaderArray.count]
+			swgFile = findString fname "swgemu"
+			shaderLocation = ""
+			if swgFile != undefined then (  --user is throwing it in their swgemu directory, so lets put the files in the correct place
+				fileLength = fname.count
+				swgFile += 6
+				fname = subString fname 1 swgFile
+				fname += "shader\\"
+				makeDir fname all:true  --incase shader folder does not exist
+				fname = subString fname 1 swgFile
+				shaderLocation = fname + swg_shaderArray[1]
+				swgFile = findString shaderLocation "/"
+				shaderLocation = replace shaderLocation swgFile 1 "\\"   --Need to change C:\swgemu\shader/shaderName.sht  
+			) else ( --not saved in swgemu, so put it in the same location as the msh, but inside a shader folder
+				fname = getFileNamePath fname
+				shaderLocation = fname + swg_shaderArray[1]
+				swgFile = findString shaderLocation "shader/"
+				shaderLocation = replace shaderLocation swgFile 7 ""   --yes, i reused the swgFile variable for other stuff to save on system resources
+			)
+			--create the file and open it in binary write
+			i = createfile shaderLocation
+			close i
+			stream = fopen shaderLocation "wb"
+			--find lengths of different parts of the file to find the total length
+			effectLength = effectLink.count + 1
+			tcssLength = (tcssArray.count)/2 * 5 + 20
+			avrsLength = (avrsArray.count)/2 * 5
+			if avrsLength != 0 then (avrsLength += 20)
+			textureLength = 0
+			for f=1 to num do (
+				textureLength += textureArray[f].count + 44
+			)
+			textureLength += 12 + (num-1)*8
+			--start writing
+			filePointer = textureLength + tcssLength + avrsLength + effectLength + 144
+			writeLong stream 0x4D524F46--form
+			dataLength stream filePointer
+			writeLong stream 0x54485353 --ssht form
+			writeLong stream 0x4D524F46
+			filePointer -= 12
+			dataLength stream filePointer
+			writeLong stream 0x30303030 --0000 form
+			writeLong stream 0x4D524F46
+			filePointer = 104
+			dataLength stream filePointer
+			writeLong stream 0x5354414D --mats form
+			writeLong stream 0x4D524F46
+			filePointer = 92
+			dataLength stream filePointer
+			writeLong stream 0x30303030 --0000 tag
+			writeLong stream 0x20474154
+			filePointer = 4
+			dataLength stream filePointer
+			writeLong stream 0x4D41494E --main
+			writeLong stream 0x4C54414D --matl
+			filePointer = 68
+			dataLength stream filePointer
+			for f=1 to 17 do (
+				writefloat stream (shadeOptionArray[f].value)
+			)
+			writeLong stream 0x4D524F46 --form
+			filePointer = textureLength
+			dataLength stream filePointer
+			for f=1 to num do (
+				if f==1 then (
+					writeLong stream 0x534D5854 --txms form
+					writeLong stream 0x4D524F46
+				) else (
+					writeLong stream 0x4D524F46 -- form
+				)
+				filePointer = textureArray[f].count + 44
+				dataLength stream filePointer
+				writeLong stream 0x204D5854 --txm form
+				writeLong stream 0x4D524F46
+				filePointer -= 12
+				dataLength stream filePointer
+				writeLong stream 0x31303030 --0001 data
+				writeLong stream 0x41544144
+				writeLong stream 0x0B000000
+				dataConverter stream dataArray[f] --convert and write the texture type
+				writeLong stream 0x00000000 --Can be 0, 512, 131072, or 131584 ****
+				writeShort stream 0x0202      -- standard 02 02 02 in every sht relating to msh
+				writeByte stream 0x02
+				writeLong stream 0x454D414E --name
+				filePointer -= 31
+				dataLength stream filePointer
+				writeString stream textureArray[f]  --texture file
+			)
+			writeLong stream 0x4D524F46 -- form
+			filePointer = tcssLength -= 8
+			dataLength stream filePointer
+			writeLong stream 0x53534354 --tcss 0000
+			writeLong stream 0x30303030
+			filePointer -= 12
+			dataLength stream filePointer
+			f=1
+			do (
+				dataConverter stream tcssArray[f]
+				f +=1
+				writeByte stream ((tcssArray[f]) as integer)
+				f +=1
+			) while (f < tcssArray.count)
+			if avrsLength != 0 then (
+				writeLong stream 0x4D524F46 -- form
+				filePointer = avrsLength -= 8
+				dataLength stream filePointer
+				writeLong stream 0x53565241 --avrs 0000
+				writeLong stream 0x30303030
+				filePointer -= 12
+				dataLength stream filePointer
+				f=1
+				do (
+					dataConverter stream avrsArray[f]
+					f +=1
+					writeByte stream ((avrsArray[f]) as integer)
+					f +=1
+				) while (f < avrsArray.count)
+			)
+			writeLong stream 0x454D414E --name
+			filePointer = effectLength
+			dataLength stream filePointer
+			writeString stream effectLink
+			fclose stream
+			
+			--see if we need to run this again
+			f=1
+			rolled = false
+			deleteItem swg_objArray f  --delete what we just did
+			deleteItem swg_fvfArray f
+			deleteItem swg_shaderArray f
+			while (f <= swg_objArray.count and rolled == false) do (
+				if (swg_objArray[f][2] == 1) then ( --create another shader file
+					for i=1 to (f-1) do (
+						deleteItem swg_objArray 1  --setup new tracking system for the shaders
+						deleteItem swg_fvfArray 1
+						deleteItem swg_shaderArray 1
+					)
+					closeRolloutFloater floater
+					floater = newRolloutFloater "Star Wars Galaxies" 500 600 10 70
+					addRollout SWG_shader floater
+					rolled = true
+				)
+				f += 1
+			)
+			if rolled == false then (	
+				closeRolloutFloater floater
+				messageBox "Extraction and File Creation completed"
+			)
+		)
+	)
+)
+
+--MSH Exporter
+rollout SWG_roll "MSH Exporter"(
+	label lbl0 ""
+	checkBox APT "Create APT" width:75 across:3 offset:[0,5]
+	button expMSH "Export   MSH" width:150 Height:25 visible:off offset:[-10, 0]
+	checkBox SHT "Create SHT" checked:false width:90 offset:[40, 5]
+	group "" (
+		checkBox check1_1 "" checked:true visible:off align:#left across:2
+		checkBox check1_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text1 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl1 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check2_1 "" checked:true visible:off align:#left across: 2
+		checkBox check2_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text2 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl2 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check3_1 "" checked:true visible:off align:#left across: 2
+		checkBox check3_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text3 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl3 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check4_1 "" checked:true visible:off align:#left across: 2
+		checkBox check4_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text4 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl4 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check5_1 "" checked:true visible:off align:#left across: 2
+		checkBox check5_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text5 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl5 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check6_1 "" checked:true visible:off align:#left across: 2
+		checkBox check6_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text6 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl6 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check7_1 "" checked:true visible:off align:#left across: 2
+		checkBox check7_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text7 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl7 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check8_1 "" checked:true visible:off align:#left across: 2
+		checkBox check8_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text8 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl8 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check9_1 "" checked:true visible:off align:#left across: 2
+		checkBox check9_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text9 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl9 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check10_1 "" checked:true visible:off align:#left across: 2
+		checkBox check10_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text10 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl10 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check11_1 "" checked:true visible:off align:#left across: 2
+		checkBox check11_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text11 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl11 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check12_1 "" checked:true visible:off align:#left across: 2
+		checkBox check12_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text12 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl12 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check13_1 "" checked:true visible:off align:#left across: 2
+		checkBox check13_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text13 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl13 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check14_1 "" checked:true visible:off align:#left across: 2
+		checkBox check14_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text14 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl14 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check15_1 "" checked:true visible:off align:#left across: 2
+		checkBox check15_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text15 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl15 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check16_1 "" checked:true visible:off align:#left across: 2
+		checkBox check16_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text16 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl16 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check17_1 "" checked:true visible:off align:#left across: 2
+		checkBox check17_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text17 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl17 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check18_1 "" checked:true visible:off align:#left across: 2
+		checkBox check18_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text18 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl18 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check19_1 "" checked:true visible:off align:#left across: 2
+		checkBox check19_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text19 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl19 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check20_1 "" checked:true visible:off align:#left across: 2
+		checkBox check20_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text20 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl20 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check21_1 "" checked:true visible:off align:#left across: 2
+		checkBox check21_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text21 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl21 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check22_1 "" checked:true visible:off align:#left across: 2
+		checkBox check22_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text22 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl22 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check23_1 "" checked:true visible:off align:#left across: 2
+		checkBox check23_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text23 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl23 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check24_1 "" checked:true visible:off align:#left across: 2
+		checkBox check24_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text24 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl24 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check25_1 "" checked:true visible:off align:#left across: 2
+		checkBox check25_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text25 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl25 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check26_1 "" checked:true visible:off align:#left across: 2
+		checkBox check26_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text26 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl26 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check27_1 "" checked:true visible:off align:#left across: 2
+		checkBox check27_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text27 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl27 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check28_1 "" checked:true visible:off align:#left across: 2
+		checkBox check28_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text28 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl28 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check29_1 "" checked:true visible:off align:#left across: 2
+		checkBox check29_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text29 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl29 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check30_1 "" checked:true visible:off align:#left across: 2
+		checkBox check30_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text30 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl30 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check31_1 "" checked:true visible:off align:#left across: 2
+		checkBox check31_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text31 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl31 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check32_1 "" checked:true visible:off align:#left across: 2
+		checkBox check32_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text32 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl32 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check33_1 "" checked:true visible:off align:#left across: 2
+		checkBox check33_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text33 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl33 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check34_1 "" checked:true visible:off align:#left across: 2
+		checkBox check34_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text34 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl34 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check35_1 "" checked:true visible:off align:#left across: 2
+		checkBox check35_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text35 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl35 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check36_1 "" checked:true visible:off align:#left across: 2
+		checkBox check36_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text36 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl36 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check37_1 "" checked:true visible:off align:#left across: 2
+		checkBox check37_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text37 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl37 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check38_1 "" checked:true visible:off align:#left across: 2
+		checkBox check38_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text38 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl38 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check39_1 "" checked:true visible:off align:#left across: 2
+		checkBox check39_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text39 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl39 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check40_1 "" checked:true visible:off align:#left across: 2
+		checkBox check40_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text40 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl40 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check41_1 "" checked:true visible:off align:#left across: 2
+		checkBox check41_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text41 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl41 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check42_1 "" checked:true visible:off align:#left across: 2
+		checkBox check42_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text42 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl42 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check43_1 "" checked:true visible:off align:#left across: 2
+		checkBox check43_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text43 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl43 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check44_1 "" checked:true visible:off align:#left across: 2
+		checkBox check44_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text44 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl44 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check45_1 "" checked:true visible:off align:#left across: 2
+		checkBox check45_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text45 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl45 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check46_1 "" checked:true visible:off align:#left across: 2
+		checkBox check46_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text46 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl46 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check47_1 "" checked:true visible:off align:#left across: 2
+		checkBox check47_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text47 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl47 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check48_1 "" checked:true visible:off align:#left across: 2
+		checkBox check48_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text48 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl48 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check49_1 "" checked:true visible:off align:#left across: 2
+		checkBox check49_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text49 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl49 "FVF Code" items:#("") width:100 visible:off
+	)
+	group "" (
+		checkBox check50_1 "" checked:true visible:off align:#left across: 2
+		checkBox check50_2 "Create Shader File" checked:false visible:off offset:[75,0]
+		editText text50 "Shader Name:  " fieldWidth:270 text:"" visible:off
+		dropdownlist ddl50 "FVF Code" items:#("") width:100 visible:off
+	)
+
+	local check1NameArray = #(check1_1, check2_1, check3_1, check4_1, check5_1, check6_1, check7_1, check8_1, check9_1, check10_1, check11_1, check12_1, check13_1, check14_1, check15_1, check16_1, check17_1, check18_1, check19_1, check20_1, check21_1, check22_1, check23_1, check24_1, check25_1, check26_1, check27_1, check28_1, check29_1, check30_1,check31_1, check32_1, check33_1, check34_1, check35_1, check36_1, check37_1, check38_1, check39_1, check40_1,check41_1, check42_1, check43_1, check44_1, check45_1, check46_1, check47_1, check48_1, check49_1, check50_1)
+	local check2NameArray = #(check1_2, check2_2, check3_2, check4_2, check5_2, check6_2, check7_2, check8_2, check9_2, check10_2, check11_2, check12_2, check13_2, check14_2, check15_2, check16_2, check17_2, check18_2, check19_2, check20_2, check21_2, check22_2, check23_2, check24_2, check25_2, check26_2, check27_2, check28_2, check29_2, check30_2, check31_2, check32_2, check33_2, check34_2, check35_2, check36_2, check37_2, check38_2, check39_2, check40_2, check41_2, check42_2, check43_2, check44_2, check45_2, check46_2, check47_2, check48_2, check49_2, check50_2)
+	local textNameArray = #(text1, text2, text3, text4, text5, text6, text7, text8, text9, text10, text11, text12, text13, text14, text15, text16, text17, text18, text19, text20, text21, text22, text23, text24, text25, text26, text27, text28, text29, text30, text31, text32, text33, text34, text35, text36, text37, text38, text39, text40, text41, text42, text43, text44, text45, text46, text47, text48, text49, text50)
+	local ddlNameArray = #(ddl1, ddl2, ddl3, ddl4, ddl5, ddl6, ddl7, ddl8, ddl9, ddl10, ddl11, ddl12, ddl13, ddl14, ddl15, ddl16, ddl17, ddl18, ddl19, ddl20, ddl21, ddl22, ddl23, ddl24, ddl25, ddl26, ddl27, ddl28, ddl29, ddl30, ddl31, ddl32, ddl33, ddl34, ddl35, ddl36, ddl37, ddl38, ddl39, ddl40, ddl41, ddl42, ddl43, ddl44, ddl45, ddl46, ddl47, ddl48, ddl49, ddl50)
+	
+	fn checkState f = (
+		if check1NameArray[f].checked then (
+			check2NameArray[f].enabled = true
+			textNameArray[f].enabled = true
+			if ddlNameArray[f].items.count > 1 then ddlNameArray[f].enabled = true
+		) else (
+			check2NameArray[f].enabled = false
+			textNameArray[f].enabled = false
+			if ddlNameArray[f].enabled then ddlNameArray[f].enabled = false
+		)
+	)
+	
+	on SWG_roll open do ( 
+		--Make sure the user isn't trying to run without having a model to export
+		if geometry.count == 0 then (
+			messageBox "No geometry objects detected"
+		)
+		--make visible the amount of information required
+		if geometry.count < 50 then (
+			expMSH.visible = true
+			SWG_roll.height = 55
+			suspendEditing()
+			for f=1 to geometry.count do (
+				check1NameArray[f].visible = true
+				check1NameArray[f].text = "Export " + geometry[f].name
+				check2NameArray[f].visible = true
+				textNameArray[f].visible = true
+				textNameArray[f].text = geometry[f].name + ".sht"
+				ddlNameArray[f].visible = true
+				SWG_roll.height += 112
+				--calculate bpv, then use to setup fvf code
+				vertColor = 0
+				textNum = 0
+				mapVerts = #()
+				notGood = false
+				--figure out what is and isnt a mesh right here to prevent error
+				if (((classOf geometry[f]) as String) != "Editable_mesh" or (getNumVerts geometry[f]) == 0) then (
+					strError = geometry[f].name + " is not an editable mesh and will be disabled."
+					messageBox strError
+					notGood = true
+				) else (
+					found = false
+					if (geometry[f].modifiers.count) != 0 then (
+						i=1
+						do (
+							if (geometry[f].modifiers[i].enabled and ((classOf geometry[f].modifiers[i]) == Unwrap_UVW or (classOf geometry[f].modifiers[i])== VertexPaint)) then (
+								modpanel.setCurrentObject geometry[f].modifiers[i]
+								found = true
+							)
+							i+= 1
+						) while (found == false and i <= geometry[f].modifiers.count)
+					)
+					if (meshop.getMapSupport geometry[f] 0) then (vertColor = 1)
+					for i=1 to meshop.getNumMaps geometry[f] do (
+						if (meshop.getMapSupport geometry[f] i) then (
+							textNum += 1
+							append mapVerts (meshop.getNumMapVerts geometry[f] i)
+						)
+					)
+					vertCheck = makeUniqueArray mapVerts
+					if vertCheck.count > 1 then (
+						strError = geometry[f].name + " UV unwraps do not match"
+						messageBox strError
+						notGood = true
+					)
+				)
+				bpv = 24 + 8 * textNum + 4 * vertColor
+				if bpv > 72 then (
+					strError = geometry[f].name + " has exceeded the max limit 72bpv"
+					messageBox strError
+					notGood = true
+				)				
+				if notGood then (
+					check1NameArray[f].enabled = false
+					check1NameArray[f].checked = false
+					check2NameArray[f].enabled = false
+					check2NameArray[f].checked = false
+					textNameArray[f].enabled = false
+					textNum = 1
+					if (geometry.count == 1) then (expMSH.enabled = false)
+				)
+				case bpv of (
+					28:(
+						ddlNameArray[f].items = #("28 BPV")
+						ddlNameArray[f].enabled = false
+						)
+					32: (
+						ddlNameArray[f].items = #("32 BPV")
+						ddlNameArray[f].enabled = false
+						)
+					36:(
+						ddlNameArray[f].items = #("36 BPV")
+						ddlNameArray[f].enabled = false
+						)
+					40:(
+						ddlNameArray[f].items = #("40 BPV")
+						ddlNameArray[f].enabled = false
+						)
+					44:(
+						ddlNameArray[f].items = #("44 BPV")
+						ddlNameArray[f].enabled = false
+						)
+					48:(
+						ddlNameArray[f].items = #("48 BPV 1", "48 BPV 2" )
+						)
+					52:(
+						ddlNameArray[f].items = #("52 BPV 1", "52 BPV 2")
+						)
+					56:(
+						ddlNameArray[f].items = #("56 BPV 1", "56 BPV 2")
+						)
+					60:(
+						ddlNameArray[f].items = #("60 BPV 1", "60 BPV 2")
+						)
+					64:(
+						ddlNameArray[f].items = #("64 BPV")
+						ddlNameArray[f].enabled = false
+						)
+					68:(
+						ddlNameArray[f].items = #("68 BPV 1", "68 BPV 2")
+						)
+					72:(
+						ddlNameArray[f].items = #("72 BPV")
+						ddlNameArray[f].enabled = false
+						)
+					default:(
+						ddlNameArray[f].items = #("ERROR")
+						ddlNameArray[f].enabled = false
+						)
+				)
+			)
+			resumeEditing()
+		) else (messageBox "Max number of geometry objects exceeded (30)") --Will be increased later on when menu options are pretty much set in stone
+	)
+	--enabled/disbable state caused by check box
+	on check1_1 changed theState do checkState 1
+	on check2_1 changed theState do checkState 2
+	on check3_1 changed theState do checkState 3
+	on check4_1 changed theState do checkState 4
+	on check5_1 changed theState do checkState 5
+	on check6_1 changed theState do checkState 6
+	on check7_1 changed theState do checkState 7
+	on check8_1 changed theState do checkState 8
+	on check9_1 changed theState do checkState 9
+	on check10_1 changed theState do checkState 10
+	on check11_1 changed theState do checkState 11
+	on check12_1 changed theState do checkState 12
+	on check13_1 changed theState do checkState 13
+	on check14_1 changed theState do checkState 14
+	on check15_1 changed theState do checkState 15
+	on check16_1 changed theState do checkState 16
+	on check17_1 changed theState do checkState 17
+	on check18_1 changed theState do checkState 18
+	on check19_1 changed theState do checkState 19
+	on check20_1 changed theState do checkState 20
+	on check21_1 changed theState do checkState 21
+	on check22_1 changed theState do checkState 22
+	on check23_1 changed theState do checkState 23
+	on check24_1 changed theState do checkState 24
+	on check25_1 changed theState do checkState 25
+	on check26_1 changed theState do checkState 26
+	on check27_1 changed theState do checkState 27
+	on check28_1 changed theState do checkState 28
+	on check29_1 changed theState do checkState 29
+	on check30_1 changed theState do checkState 30
+	on check31_1 changed theState do checkState 31
+	on check32_1 changed theState do checkState 32
+	on check33_1 changed theState do checkState 33
+	on check34_1 changed theState do checkState 34
+	on check35_1 changed theState do checkState 35
+	on check36_1 changed theState do checkState 36
+	on check37_1 changed theState do checkState 37
+	on check38_1 changed theState do checkState 38
+	on check39_1 changed theState do checkState 39
+	on check40_1 changed theState do checkState 40
+	on check41_1 changed theState do checkState 41
+	on check42_1 changed theState do checkState 42
+	on check43_1 changed theState do checkState 43
+	on check44_1 changed theState do checkState 44
+	on check45_1 changed theState do checkState 45
+	on check46_1 changed theState do checkState 46
+	on check47_1 changed theState do checkState 47
+	on check48_1 changed theState do checkState 48
+	on check49_1 changed theState do checkState 49
+	on check50_1 changed theState do checkState 50
+		
+	on SHT changed theState do (
+		f = 1
+		if theState then (
+			do (
+				check2NameArray[f].checked = true
+				f += 1
+			) while check2NameArray[f].visible == true
+		) else (
+			do (
+				check2NameArray[f].checked = false
+				f += 1
+			) while check2NameArray[f].visible == true
+		)
+	)
+	
+	--calculates the data set sizes
+	fn dataLength stream dataSize = (
+		t1 = floor (dataSize / 16777216)
+		dataSize = dataSize - t1 * 16777216
+		t2 = floor (dataSize / 65536)
+		dataSize = dataSize - t2 * 65536
+		t3 = floor (dataSize / 256)
+		dataSize = dataSize - t3 * 256
+		t4 = dataSize
+		writeByte stream t1 #unsigned
+		writeByte stream t2 #unsigned
+		writeByte stream t3 #unsigned
+		writeByte stream t4 #unsigned
+	)
+	
+	--The real guts right here
+	on expMSH pressed do (
+		goodToGo = true --used as error handler
+		swg_objArray = #() --used to identify which objects were selected for export
+		--create global vars to pass between msh and sht function
+		swg_shaderArray = #() --name of shader file
+		swg_fvfArray = #() --bpv and fvf code
+		for f=1 to geometry.count do (
+			if textNameArray[f].enabled then (
+				fileName = "shader/" + textNameArray[f].text  --simplifies user input
+				index = findString fileName "."
+				if (index == undefined) then (
+					fileName += ".sht"
+				) else ( 
+					if (substring fileName index fileName.count != ".sht") then (
+						strError = fileName + " contains incorrect file extension"
+						messageBox strError
+						goodToGo = false
+					)
+				)
+				append swg_shaderArray fileName
+				if check2NameArray[f].checked then (shadeIt = 1) else (shadeIt = 0)
+				append swg_objArray [f, shadeIt]
+				--find bpv again
+				vertColor = 0
+				textNum = 0
+				if (meshop.getMapSupport geometry[f] 0) then (vertColor = 1)
+				for i=1 to meshop.getNumMaps geometry[f] do (
+					if (meshop.getMapSupport geometry[f] i) then (
+						textNum += 1
+					)
+				)
+				bpv = 24 + 8 * textNum + 4 * vertColor
+				--convert FVF user code to the proper long
+				--unable to find a pattern 
+				fvfHex = 0
+				case ddlNameArray[f].selected of (
+					"28 BPV":(fvfHex = 219217920)
+					"32 BPV":(fvfHex = 85000192)
+					"36 BPV":(fvfHex = 219217920)
+					"40 BPV":(fvfHex = 89260032)
+					"44 BPV":(fvfHex = 223477760)
+					"48 BPV 1":(fvfHex = 97648640)
+					"48 BPV 2":(fvfHex = 89325824)
+					"52 BPV 1":(fvfHex = 231866368)
+					"52 BPV 2":(fvfHex = 223543552)
+					"56 BPV 1":(fvfHex = 89326336)
+					"56 BPV 2":(fvfHex = 89392384)
+					"60 BPV 1":(fvfHex = 223544064)
+					"60 BPV 2":(fvfHex = 223610112)
+					"64 BPV":(fvfHex = 89394432)
+					"68 BPV 1":(fvfHex = 223612160)
+					"68 BPV 2":(fvfHex = 223679744)
+					"72 BPV":(fvfHex = 89470208)
+					default:()
+				)
+				append swg_fvfArray [bpv, fvfHex]
+			)
+		)
+		--Make sure the user doesn't try to export 0 objects
+		if swg_objArray.count == 0  then (
+			messageBox "No objects were selected"
+			goodToGo = false
+		)
+
+		--figure out the size of the file
+		--for each object (shader length + vertexNum * bpv + facesNum * 6)
+		filePointer = 0
+		for f = 1 to swg_objArray.count do (
+			tmesh = snapshotAsMesh geometry[swg_objArray[f][1]]
+			numVerts = getNumTVerts tmesh
+			if numVerts > 65536 then (
+				strError = geometry[swg_objArray[f][1]].name + " vertex count is greater than max (65536)"  --hard limit for shorts, will upgrade for long option in the future
+				messagebox strError
+				goodToGo = false
+			)
+			if numVerts == 0 then (
+				numVerts = getNumVerts geometry[swg_objArray[f][1]]
+				if numVerts > 65536 then (
+					strError = geometry[swg_objArray[f][1]].name + " vertex count is greater than max (65536)"  --hard limit for shorts, will upgrade for long option in the future
+					messagebox strError
+					goodToGo = false
+				)
+			)
+			numFaces = getNumFaces tmesh
+			filePointer += swg_shaderArray[f].count + numVerts * swg_fvfArray[f][1] + numFaces * 6
+		)
+		
+		if goodToGo then (
+			--Create the file
+			fname = getSaveFileName caption:"Select Star Wars Galaxies Model file" types:"MSH File (*.msh)|*.msh|All Files (*.*)|*.*|" 
+			if fname != undefined then (
+				f = createfile fname
+				close f
+			) else (goodToGo = false)  --hit cancel instead of save
+		)
+		
+		if goodToGo then (
+			stream = fopen fname "wb"
+			--Start writing the header data
+			--A lot of it goes name then size of data or name then total data remaining
+			writeLong stream 0x4D524F46 --form
+			filePointer += 119 * objects.count + 225
+			dataLength stream filePointer
+			writeLong stream 0x4853454D --mesh form
+			writeLong stream 0X4D524F46 
+			filePointer -= 12
+			dataLength stream filePointer
+			writeLong stream 0x35303030 --0005 form
+			writeLong stream 0X4D524F46
+			size = 165
+			dataLength stream size
+			writeLong stream 0x52505041 --appr form
+			writeLong stream 0X4D524F46
+			writeLong stream 0x99000000
+			writeLong stream 0x33303030--0003 form
+			writeLong stream 0x4D524F46
+			writeLong stream 0x60000000
+			writeLong stream 0x58425845--exbx form
+			writeLong stream 0x4D524F46
+			writeLong stream 0x54000000
+			writeLong stream 0x31303030--0001 form
+			writeLong stream 0x4D524F46
+			writeLong stream 0x28000000
+			writeLong stream 0x50535845 --exsp form
+			writeLong stream 0x4D524F46
+			writeLong stream 0x1C000000
+			writeLong stream 0x31303030--spherical bounding box
+			writeLong stream 0x52485053
+			writeLong stream 0x10000000
+			--Need to find min and max points relating to the objects that are being exported
+			--Maybe an issue with x, z, -y crossover, but so far all models are importing fine. Should crash SWG if smaller than needed
+			--Use predefined maxscript coords if only 1 objects
+			maxBox = geometry[swg_objArray[1][1]].max
+			minBox = geometry[swg_objArray[1][1]].min
+			center = geometry[swg_objArray[1][1]].center
+			--else find the coords needed
+			for f=2 to swg_objArray.count do (
+				maxCheck = geometry[swg_objArray[f][1]].max
+				minCheck = geometry[swg_objArray[f][1]].min
+				if maxCheck.x > maxBox.x then (maxBox.x = maxCheck.x)
+				if maxCheck.y > maxBox.y then (maxBox.y = maxCheck.y)
+				if maxCheck.z > maxBox.z then (maxBox.z = maxCheck.z)
+				if minCheck.x < minBox.x then (minBox.x = minCheck.x)
+				if minCheck.y < minBox.y then (minBox.y = minCheck.y)
+				if minCheck.z < minBox.z then (minBox.z = minCheck.z)
+				if f==swg_objArray.count then (
+					center.x = maxBox.x - (maxBox.x - minBox.x)/2
+					center.y = maxBox.y - (maxBox.y - minBox.y)/2
+					center.z = maxBox.z - (maxBox.z - minBox.z)/2
+				)
+			)
+			--spherical bounding box data 
+			writeFloat stream -center.x
+			writeFloat stream center.z
+			writeFloat stream -center.y
+			radX = maxBox.x - center.x
+			radY = maxBox.z - center.z
+			radZ = center.y - maxBox.y
+			radCircle = sqrt(radX^2 + radY^2 + radZ^2)
+			writeFloat stream radCircle
+			writeLong stream 0x20584F42--box
+			writeLong stream 0x18000000
+			--bounding box data
+			writeFloat stream -minBox.x
+			writeFloat stream maxBox.z
+			writeFloat stream -minBox.y
+			writeFloat stream -MaxBox.x
+			writeFloat stream minBox.z
+			writeFloat stream -maxBox.y
+			writeLong stream 0x4D524F46--form
+			writeLong stream 0x04000000
+			writeLong stream 0x4C4C554E--nullform
+			writeLong stream 0x4D524F46
+			writeLong stream 0x04000000
+			writeLong stream 0x53545048--hptsform
+			writeLong stream 0x4D524F46
+			writeLong stream 0x0D000000
+			writeLong stream 0x524F4C46--flordata
+			writeLong stream 0x41544144
+			writeLong stream 0x01000000
+			writeByte stream 0x00
+			writeLong stream 0x4D524F46--form
+			filePointer -= 185
+			dataLength stream filePointer
+			writeLong stream 0x20535053--spsform
+			writeLong stream 0x4D524F46
+			filePointer -= 12
+			dataLength stream filePointer
+			writeLong stream 0x31303030--0001cnt
+			writeLong stream 0x20544E43
+			writeLong stream 0x04000000
+			writeShort stream swg_objArray.count --Number of objects being put in the file
+			writeShort stream 0x0000
+			
+			--Where the file starts to loop for each object
+			for f=1 to swg_objArray.count do (
+				objName =  geometry[swg_objArray[f][1]]
+				tmesh = snapshotAsMesh objName
+				mapChanArray = #()
+				vertColoring = meshop.getMapSupport objName 0  --true if user has added vertex coloring
+				for i=1 to meshop.getNumMaps objName do (
+					if (meshop.getMapSupport objName i) then (
+						append mapChanArray i
+					)
+				)
+				numVerts = getNumTVerts tmesh
+				if numVerts == 0 then numVerts = getNumVerts tmesh
+				numFaces = getNumFaces tmesh
+				--size is now dictated only by the object being written into the file
+				filePointer = numVerts * swg_fvfArray[f][1] + numFaces * 6 + swg_shaderArray[f].count + 111
+				writeLong stream 0x4D524F46--form
+				dataLength stream filePointer
+				--Would love to write this as a char, but maxscript doesnt have a char function
+				--So time to get dirty
+				writeShort stream 0x3030 --00XYname 
+				numByte = f/10+48
+				writeByte stream numByte
+				numByte = ((mod f 10)+48) as integer
+				writeByte stream numByte
+				writeLong stream 0x454D414E
+				size = swg_shaderArray[f].count + 1 --Include string stop code
+				dataLength stream size
+				writeString stream swg_shaderArray[f] --Shader file name
+				writeLong stream 0x4F464E49--info
+				writeLong stream 0x04000000
+				writeLong stream 0x00000001
+				writeLong stream 0x4D524F46--form
+				filePointer -= 32 + size
+				dataLength stream filePointer
+				writeLong stream 0x31303030--0001info 
+				writeLong stream 0x4F464E49
+				writeLong stream 0x06000000
+				writeLong stream 0x00000009
+				writeShort stream 0x0001
+				writeLong stream 0x4D524F46--form
+				filePointer = numVerts * swg_fvfArray[f][1] +40
+				dataLength stream filePointer
+				writeLong stream 0x41585456--vtxaform
+				writeLong stream 0x4D524F46
+				filePointer -= 12
+				dataLength stream filePointer
+				writeLong stream 0x33303030--0003info
+				writeLong stream 0x4F464E49
+				writeLong stream 0x08000000
+				dataLength stream swg_fvfArray[f][2]  --FVF Flag
+				writeShort stream numVerts #unsigned
+				writeShort stream 0x0000
+				writeLong stream 0x41544144--data
+				filePointer = numVerts * swg_fvfArray[f][1]
+				dataLength stream filePointer
+				
+				--Now need to get the object data information
+				
+				--variables (How many do I have? lol  I hope no one ever spits out the full error code and asks for help)
+				vertArray = #()
+				normArray = #()
+				uvArray1 = #()
+				uvArray2 = #()
+				uvArray3 = #()
+				uvArray4 = #()
+				uvArray5 = #()
+				uvArray6 = #()
+				faceXArray = #()
+				faceYArray = #()
+				faceZArray = #()
+				vertColorArray = #()
+				norms = #()
+				--get the face indexs *Note: Must be texture face index*
+				if (getNumTVerts objName) == 0 then (
+					for i=1 to numFaces do(
+						tVertIndex = getFace tmesh i
+						append faceXArray tvertIndex.x
+						append faceYArray tvertIndex.y
+						append faceZArray tvertIndex.z
+					)
+				)else(
+					for i=1 to numFaces do(
+						tVertIndex = getTVFace tmesh i
+						append faceXArray tvertIndex.x
+						append faceYArray tvertIndex.y
+						append faceZArray tvertIndex.z
+					)
+				)
+				--find normals
+				for i = 1 to getNumVerts tmesh do (
+					vert = [0,0,0]
+					for j = 1 to getNumFaces tmesh do (
+						face = getFace tmesh j
+						if i == face.x or i == face.y or i == face.z then (
+							vert += getFaceNormal tmesh j
+						)
+					)
+					vert = normalize vert
+					append norms [-vert.x, vert.z, -vert.y]
+				)
+				--get the vertex data, but set it up according to the texture verts (UV)
+				--means multiple verts can occupy same space, but allows proper texturing
+				--How this works: TVert is located inside of a TFace, take the exact position ie TFace 3z and find what is inside regular Face 3z. That number is the vert we need.
+				for i=1 to numVerts do (
+					--TVert is the UV
+					for k=1 to mapChanArray.count do (
+						uvpos = meshop.getMapVert objName mapChanArray[k] i
+						uvY = uvpos.y
+						case k of (
+							1: (append uvArray1 [uvpos.x, (uvY-1) * -1])
+							2: (append uvArray2 [uvpos.x, (uvY-1) * -1])
+							3: (append uvArray3 [uvpos.x, (uvY-1) * -1])
+							4: (append uvArray4 [uvpos.x, (uvY-1) * -1])
+							5: (append uvArray5 [uvpos.x, (uvY-1) * -1])
+							6: (append uvArray6 [uvpos.x, (uvY-1) * -1])
+							default:()
+						)
+					)
+					notFound = true
+					faceIndex = findItem faceXArray i   --Major decrease in export time  (one file went from +1hr to 15 seconds)
+					if 0 != faceIndex then ( 
+						regFace = getFace tmesh faceIndex
+						vertIndex = regFace.x
+						vpos = getVert tmesh vertIndex
+						normals = norms[vertIndex]
+						append vertArray [-vpos.x, vpos.z, -vpos.y]
+						append normArray [normals.x, normals.y, normals.z]
+						if vertColoring then (  --adds color profile if there is one
+							faceColor = getVCFace tmesh faceIndex
+							vertColor = getVertColor tmesh faceColor.x
+							append vertColorArray [(vertColor.r as integer), (vertColor.g as integer), (VertColor.b as integer)]
+						)
+						notFound = false
+					)
+					if notFound then (
+						faceIndex = findItem faceYArray i
+						if 0 != faceIndex then (
+							regFace = getFace tmesh faceIndex
+							vertIndex = regFace.y
+							vpos = getVert tmesh vertIndex
+							normals = norms[vertIndex]
+							append vertArray [-vpos.x, vpos.z, -vpos.y]
+							append normArray [normals.x, normals.y, normals.z]
+							if vertColoring then (
+								faceColor = getVCFace tmesh faceIndex
+								vertColor = getVertColor tmesh faceColor.y
+								append vertColorArray [(vertColor.r as integer), (vertColor.g as integer), (VertColor.b as integer)]
+							)
+							notFound = false
+						) 
+					)
+					if notFound then (
+						faceIndex = findItem faceZArray i
+						if 0 != faceIndex then (
+							regFace = getFace tmesh faceIndex
+							vertIndex = regFace.z
+							vpos = getVert tmesh vertIndex
+							normals = norms[vertIndex]
+							append vertArray [-vpos.x, vpos.z, -vpos.y]
+							append normArray [normals.x, normals.y, normals.z]
+							if vertColoring then (
+								faceColor = getVCFace tmesh faceIndex
+								vertColor = getVertColor tmesh faceColor.z
+								append vertColorArray [(vertColor.r as integer), (vertColor.g as integer), (VertColor.b as integer)]
+							)
+							notFound = false
+						)
+					) 
+				)
+				
+				--back to writing file, this time actually writing the data portion\
+				case swg_fvfArray[f][1] of (
+					28: (
+						for f= 1 to vertArray.count do (
+							writeFloat stream vertArray[f][1]
+							writeFloat stream vertArray[f][2]
+							writeFloat stream vertArray[f][3]
+							writeFloat stream normArray[f][1]
+							writeFloat stream normArray[f][2]
+							writeFloat stream normArray[f][3]
+							writebyte stream vertColorArray[f][1]
+							writebyte stream vertColorArray[f][2]
+							writebyte stream vertColorArray[f][3]
+							writebyte stream 0xFF
+						)
+					)
+					32: (
+						for f = 1 to vertArray.count do (
+							writeFloat stream vertArray[f][1]
+							writeFloat stream vertArray[f][2]
+							writeFloat stream vertArray[f][3]
+							writeFloat stream normArray[f][1]
+							writeFloat stream normArray[f][2]
+							writeFloat stream normArray[f][3]
+							writeFloat stream uvArray1[f][1]
+							writeFloat stream uvArray1[f][2]
+						)
+					)
+					36: (
+						for f = 1 to vertArray.count do (
+							writeFloat stream vertArray[f][1]
+							writeFloat stream vertArray[f][2]
+							writeFloat stream vertArray[f][3]
+							writeFloat stream normArray[f][1]
+							writeFloat stream normArray[f][2]
+							writeFloat stream normArray[f][3]
+							writebyte stream vertColorArray[f][1]
+							writebyte stream vertColorArray[f][2]
+							writebyte stream vertColorArray[f][3]
+							writebyte stream 0xFF
+							writeFloat stream uvArray1[f][1]
+							writeFloat stream uvArray1[f][2]
+						)
+					)
+					40: (
+						for f = 1 to vertArray.count do (
+							writeFloat stream vertArray[f][1]
+							writeFloat stream vertArray[f][2]
+							writeFloat stream vertArray[f][3]
+							writeFloat stream normArray[f][1]
+							writeFloat stream normArray[f][2]
+							writeFloat stream normArray[f][3]
+							writeFloat stream uvArray1[f][1]
+							writeFloat stream uvArray1[f][2]
+							writeFloat stream uvArray2[f][1]
+							writeFloat stream uvArray2[f][2]
+						)
+					)
+					44: (
+						for f = 1 to vertArray.count do (
+							writeFloat stream vertArray[f][1]
+							writeFloat stream vertArray[f][2]
+							writeFloat stream vertArray[f][3]
+							writeFloat stream normArray[f][1]
+							writeFloat stream normArray[f][2]
+							writeFloat stream normArray[f][3]
+							writebyte stream vertColorArray[f][1]
+							writebyte stream vertColorArray[f][2]
+							writebyte stream vertColorArray[f][3]
+							writebyte stream 0xFF
+							writeFloat stream uvArray1[f][1]
+							writeFloat stream uvArray1[f][2]
+							writeFloat stream uvArray2[f][1]
+							writeFloat stream uvArray2[f][2]
+						)
+					)
+					48: (
+						for f = 1 to vertArray.count do (
+							writeFloat stream vertArray[f][1]
+							writeFloat stream vertArray[f][2]
+							writeFloat stream vertArray[f][3]
+							writeFloat stream normArray[f][1]
+							writeFloat stream normArray[f][2]
+							writeFloat stream normArray[f][3]
+							writeFloat stream uvArray1[f][1]
+							writeFloat stream uvArray1[f][2]
+							writeFloat stream uvArray2[f][1]
+							writeFloat stream uvArray2[f][2]
+							writeFloat stream uvArray3[f][1]
+							writeFloat stream uvArray3[f][2]
+						)
+					)
+					52: (
+						for f = 1 to vertArray.count do (
+							writeFloat stream vertArray[f][1]
+							writeFloat stream vertArray[f][2]
+							writeFloat stream vertArray[f][3]
+							writeFloat stream normArray[f][1]
+							writeFloat stream normArray[f][2]
+							writeFloat stream normArray[f][3]
+							writebyte stream vertColorArray[f][1]
+							writebyte stream vertColorArray[f][2]
+							writebyte stream vertColorArray[f][3]
+							writebyte stream 0xFF
+							writeFloat stream uvArray1[f][1]
+							writeFloat stream uvArray1[f][2]
+							writeFloat stream uvArray2[f][1]
+							writeFloat stream uvArray2[f][2]
+							writeFloat stream uvArray3[f][1]
+							writeFloat stream uvArray3[f][2]
+						)
+					)
+					56: (
+						for f = 1 to vertArray.count do (
+							writeFloat stream vertArray[f][1]
+							writeFloat stream vertArray[f][2]
+							writeFloat stream vertArray[f][3]
+							writeFloat stream normArray[f][1]
+							writeFloat stream normArray[f][2]
+							writeFloat stream normArray[f][3]
+							writeFloat stream uvArray1[f][1]
+							writeFloat stream uvArray1[f][2]
+							writeFloat stream uvArray2[f][1]
+							writeFloat stream uvArray2[f][2]
+							writeFloat stream uvArray3[f][1]
+							writeFloat stream uvArray3[f][2]
+							writeFloat stream uvArray4[f][1]
+							writeFloat stream uvArray4[f][2]
+						)
+					)
+					60: (
+						for f = 1 to vertArray.count do (
+							writeFloat stream vertArray[f][1]
+							writeFloat stream vertArray[f][2]
+							writeFloat stream vertArray[f][3]
+							writeFloat stream normArray[f][1]
+							writeFloat stream normArray[f][2]
+							writeFloat stream normArray[f][3]
+							writebyte stream vertColorArray[f][1]
+							writebyte stream vertColorArray[f][2]
+							writebyte stream vertColorArray[f][3]
+							writebyte stream 0xFF
+							writeFloat stream uvArray1[f][1]
+							writeFloat stream uvArray1[f][2]
+							writeFloat stream uvArray2[f][1]
+							writeFloat stream uvArray2[f][2]
+							writeFloat stream uvArray3[f][1]
+							writeFloat stream uvArray3[f][2]
+							writeFloat stream uvArray4[f][1]
+							writeFloat stream uvArray4[f][2]
+						)
+					)
+					64: (
+						for f = 1 to vertArray.count do (
+							writeFloat stream vertArray[f][1]
+							writeFloat stream vertArray[f][2]
+							writeFloat stream vertArray[f][3]
+							writeFloat stream normArray[f][1]
+							writeFloat stream normArray[f][2]
+							writeFloat stream normArray[f][3]
+							writeFloat stream uvArray1[f][1]
+							writeFloat stream uvArray1[f][2]
+							writeFloat stream uvArray2[f][1]
+							writeFloat stream uvArray2[f][2]
+							writeFloat stream uvArray3[f][1]
+							writeFloat stream uvArray3[f][2]
+							writeFloat stream uvArray4[f][1]
+							writeFloat stream uvArray4[f][2]
+							writeFloat stream uvArray5[f][1]
+							writeFloat stream uvArray5[f][2]
+						)
+					)
+					68: (
+						for f = 1 to vertArray.count do (
+							writeFloat stream vertArray[f][1]
+							writeFloat stream vertArray[f][2]
+							writeFloat stream vertArray[f][3]
+							writeFloat stream normArray[f][1]
+							writeFloat stream normArray[f][2]
+							writeFloat stream normArray[f][3]
+							writebyte stream vertColorArray[f][1]
+							writebyte stream vertColorArray[f][2]
+							writebyte stream vertColorArray[f][3]
+							writebyte stream 0xFF
+							writeFloat stream uvArray1[f][1]
+							writeFloat stream uvArray1[f][2]
+							writeFloat stream uvArray2[f][1]
+							writeFloat stream uvArray2[f][2]
+							writeFloat stream uvArray3[f][1]
+							writeFloat stream uvArray3[f][2]
+							writeFloat stream uvArray4[f][1]
+							writeFloat stream uvArray4[f][2]
+							writeFloat stream uvArray5[f][1]
+							writeFloat stream uvArray5[f][2]
+						)
+					)
+					72: (
+						for f = 1 to vertArray.count do (
+							writeFloat stream vertArray[f][1]
+							writeFloat stream vertArray[f][2]
+							writeFloat stream vertArray[f][3]
+							writeFloat stream normArray[f][1]
+							writeFloat stream normArray[f][2]
+							writeFloat stream normArray[f][3]
+							writeFloat stream uvArray1[f][1]
+							writeFloat stream uvArray1[f][2]
+							writeFloat stream uvArray2[f][1]
+							writeFloat stream uvArray2[f][2]
+							writeFloat stream uvArray3[f][1]
+							writeFloat stream uvArray3[f][2]
+							writeFloat stream uvArray4[f][1]
+							writeFloat stream uvArray4[f][2]
+							writeFloat stream uvArray5[f][1]
+							writeFloat stream uvArray5[f][2]
+							writeFloat stream uvArray6[f][1]
+							writeFloat stream uvArray6[f][2]
+						)
+					)
+					default: ()
+				)
+				writeLong stream 0x58444E49--indx
+				filePointer = numFaces * 6 + 4 --Actual file footprint of faces
+				dataLength stream filePointer
+				filePointer = numFaces * 3 --number of face data points
+				writeLong stream filePointer
+				for f = 1 to faceXArray.count do (
+					writeShort stream (faceYArray[f] - 1)
+					writeShort stream (faceXArray[f] - 1)
+					writeShort stream (faceZArray[f] - 1)
+				)
+			)
+			fclose stream
+			
+			--APT File creation
+			if APT.checked then (
+				swgFile = findString fname "swgemu"
+				if swgFile != undefined then (  --user is throwing it in their swgemu directory, so lets put the files in the correct place
+					fileLength = fname.count
+					swgFile += 6
+					aptName = getFileNameFile fname + ".apt"
+					fname = subString fname 1 swgFile
+					fname += "appearance\\"
+					makeDir fname all:true  --incase user put msh in wrong folder
+					fname = fname + aptName
+				) else ( --not saved in swgemu, so put it in the same location as the msh, but inside a shader folder
+					fname = getFileNamePath fname + getFileNameFile fname + ".apt"
+					shaderLocation = fname + swg_shaderArray[1]
+				)
+				--create the file and open it in binary write
+				i = createfile fname
+				close i
+				stream = fopen fname "wb"
+				strAPT = "appearance/mesh/" + getFileNameFile fname + ".msh"
+				writeLong stream 0x4D524F46 --form
+				filePointer = 25 + strAPT.count
+				dataLength stream filePointer
+				writeLong stream 0x20545041 -- APT form
+				writeLong stream 0x4D524F46
+				filePointer -= 12
+				dataLength stream filePointer
+				writeLong stream 0x30303030 --0000 name
+				writeLong stream 0x454D414E
+				filePointer -= 12
+				dataLength stream filePointer
+				writeString stream strAPT
+				fclose stream
+			)
+				
+			
+			--call shader creator for each shader we want to make
+			append swg_shaderArray fname --add save location on to the global shader array
+			f=1
+			rolled = false
+			do (
+				if (swg_objArray[f][2] == 1) then ( --create this shader file
+					for i=1 to (f-1) do (
+						deleteItem swg_objArray 1  --setup new tracking system for the shaders
+						deleteItem swg_fvfArray 1
+						deleteItem swg_shaderArray 1
+					)
+					closeRolloutFloater floater
+					floater = newRolloutFloater "Star Wars Galaxies" 500 600 10 70
+					addRollout SWG_shader floater
+					rolled = true
+				)
+				f += 1
+			) while (f <= swg_objArray.count and rolled == false)
+			if rolled == false then (
+				closeRolloutFloater floater
+				messageBox "Extraction Completed"
+			)
+		)
+		
+	)--end on empMSH
+)
+
+addRollout SWG_roll floater
